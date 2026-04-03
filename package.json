@@ -1,15 +1,15 @@
-
-{                                                                                
-  "name": "be.elab.skidtoycar",                              
-  "displayName": "Skid Car Toy Code",                        
-  "version": "0.0.1",                         
-  "unity": "2018.1",                             
-  "unityRelease": "",                             
-  "description": "Allow to have a skid car toy in Unity. You have to add the visual part. Physics based on Exost car in real life.",                         
-  "keywords": ["Script","Tool"],                       
-  "dependencies":{},     
-  "relatedPackages":{},     
- "samples": [
+{
+  "name": "be.elab.skidtoycar",
+  "displayName": "\ud83e\uddf0,Toy: Skid Car",
+  "version": "2026.4.2",
+  "unity": "2018.1",
+  "description": "Allow to have a skid car toy in Unity. You have to add the visual part. Physics based on Exost car in real life.",
+  "keywords": [
+    "Script",
+    "Tool"
+  ],
+  "relatedPackages": {},
+  "samples": [
     {
       "displayName": "Demo Scene",
       "description": "A sample scene that demonstrates the features of this package.",
@@ -20,6 +20,6 @@
     "name": "Eloi Stree",
     "mail": "",
     "url": "https://github.com/EloiStree/"
-  },  
-  "category": "Script"                   
-} 
+  },
+  "category": "Script"
+}
