@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Contexts;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -89,6 +90,63 @@ public class ExostCarRCDefaultMono : MonoBehaviour
     public void SetWheelBack() => SetWheelState(-1, -1, -1, -1);
     public void SetWheelStop() => SetWheelState(0,0,0,0);
 
+
+    public void SetMotorLeftFront(bool isMotorOn)
+    {
+        m_buttonLeftFrontOn = isMotorOn;
+    }
+    public void SetMotorRightFront(bool isMotorOn)
+    {
+        m_buttonRightFrontOn = isMotorOn;
+    }
+    public void SetMotorLeftBack(bool isMotorOn)
+    {
+        m_buttonLeftBackOn = isMotorOn;
+    }
+    public void SetMotorRightBack(bool isMotorOn)
+    {
+        m_buttonRightBackOn = isMotorOn;
+    }
+
+
+    public void SetTwoMotorRightTo(bool isMotorOn)
+    {
+        throw new NotImplementedException();
+    }
+    public void SetTwoMotorLeftTo(bool isMotorOn)
+    {
+        throw new NotImplementedException();
+    }
+    public void SetTwoMotorFrontTo(bool isMotorOn)
+    {
+        throw new NotImplementedException();
+    }
+    public void SetTwoMotorBackTo(bool isMotorOn)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetCarAsTurningRight() {
+
+        throw new NotImplementedException();
+    }
+
+    public void SetCarAsTurningLeft() {
+        throw new NotImplementedException();
+    }
+
+    public void SetCarAsTurningRightFast()
+    {
+
+        throw new NotImplementedException();
+    }
+    public void SetCarAsTurningLeftFast()
+    {
+
+        throw new NotImplementedException();
+    }
+
+
     public void SetWheelState(
         short leftFront,
         short rightFront,
@@ -122,10 +180,7 @@ public class ExostCarRCDefaultMono : MonoBehaviour
         if (ImpossibleSituationOfButtons())
             return;
         ComputeDeductedInfo();
-
         isCarGoodSide = m_exostCarToMoveDirection.up.y > 0f;
-
-
 
         SetWheelRotationSpeed(m_wheelRotationAnglePerSecond);
         m_deductedMoveSpeedDuringRotationPerSecond = Vector3.Distance(m_pivotLeftFront.position, m_pivotRightFront.position)*2*(float)Math.PI ;
@@ -204,14 +259,85 @@ public class ExostCarRCDefaultMono : MonoBehaviour
 
     }
 
-    
 
-  
+    [ContextMenu("Set Car As Move Backward")]
+    public void SetCarAsMoveBackward()
+    {
+
+
+        m_buttonLeftBackOn = true;
+        m_buttonRightBackOn = true;
+        m_buttonLeftFrontOn = false;
+        m_buttonRightFrontOn = false;
+    }
+
+    [ContextMenu("Set Car As Move Forward")]
+    public void SetCarAsMoveForward()
+    {
+        m_buttonLeftBackOn = false;
+        m_buttonRightBackOn = false;
+        m_buttonLeftFrontOn = true;
+        m_buttonRightFrontOn = true;
+    }
+    [ContextMenu("Set Car As Turn Right Hard")]
+    public void SetCarAsTurnRightHard()
+    {
+
+
+        m_buttonLeftBackOn = false;
+            m_buttonRightBackOn = true;
+        m_buttonLeftFrontOn = true;
+       m_buttonRightFrontOn = false;
+    }
+    [ContextMenu("Set Car As Turn Left Hard")]
+    public void SetCarAsTurnLeftHard()
+    {
+         m_buttonLeftBackOn = true;
+        m_buttonRightBackOn = false;
+        m_buttonLeftFrontOn = false;
+        m_buttonRightFrontOn = true;
+    }
+
+    [ContextMenu("Set Car As Turn Left Light")]
+    public void SetCarAsTurnLeftLight()
+    {
+
+         m_buttonLeftBackOn = false;
+        m_buttonRightBackOn = false;
+        m_buttonLeftFrontOn = false;
+        m_buttonRightFrontOn = true;
+    }
+
+    [ContextMenu("Set Car As Turn Right Light")]
+    public void SetCarAsTurnRightLight()
+    {
+        m_buttonLeftBackOn = false;
+        m_buttonRightBackOn = false;
+        m_buttonLeftFrontOn = true;
+        m_buttonRightFrontOn= false;
+    }
+
+    [ContextMenu("Set Car As Turn Right Light Backward")]
+    public void SetCarAsTurnRightLightBackward()
+    {
+
+         m_buttonLeftBackOn = true;
+        m_buttonRightBackOn = false;
+        m_buttonLeftFrontOn = false;
+        m_buttonRightFrontOn = false;
+    }
+
+    [ContextMenu("Set Car As Turn Left Light Backward")]
+    public void SetCarAsTurnLeftLightBackward()
+    {
+        m_buttonLeftBackOn = false;
+        m_buttonRightBackOn = true;
+        m_buttonLeftFrontOn = false;
+        m_buttonRightFrontOn= false;
+    }
 
     private bool MoveBackward()
     {
-
-        
         return m_buttonLeftBackOn && m_buttonRightBackOn && !m_buttonLeftFrontOn && !m_buttonRightFrontOn;
     }
 
@@ -234,6 +360,23 @@ public class ExostCarRCDefaultMono : MonoBehaviour
     {
 
         return !m_buttonLeftBackOn && !m_buttonRightBackOn && !m_buttonLeftFrontOn && m_buttonRightFrontOn;
+    }
+
+    private bool TurnRightLight()
+    {
+
+        return !m_buttonLeftBackOn && !m_buttonRightBackOn && m_buttonLeftFrontOn && !m_buttonRightFrontOn;
+    }
+
+    private bool TurnRightLightBackward()
+    {
+
+        return m_buttonLeftBackOn && !m_buttonRightBackOn && !m_buttonLeftFrontOn && !m_buttonRightFrontOn;
+    }
+
+    private bool TurnLeftLightBackward()
+    {
+        return !m_buttonLeftBackOn && m_buttonRightBackOn && !m_buttonLeftFrontOn && !m_buttonRightFrontOn;
     }
 
     public enum RotateType { LeftFront, RightFront, LeftBack, RightBack}
@@ -282,25 +425,6 @@ public class ExostCarRCDefaultMono : MonoBehaviour
         }
     }
 
-    private bool TurnRightLight()
-    {
-
-        return !m_buttonLeftBackOn && !m_buttonRightBackOn && m_buttonLeftFrontOn && !m_buttonRightFrontOn;
-    }
-
-    private bool TurnRightLightBackward()
-    {
-
-        return m_buttonLeftBackOn && !m_buttonRightBackOn && !m_buttonLeftFrontOn && !m_buttonRightFrontOn;
-    }
-
-    private bool TurnLeftLightBackward()
-    {
-
-        
-        return !m_buttonLeftBackOn && m_buttonRightBackOn && !m_buttonLeftFrontOn && !m_buttonRightFrontOn;
-    }
-
 
 
 
@@ -309,20 +433,5 @@ public class ExostCarRCDefaultMono : MonoBehaviour
         return (m_buttonRightBackOn && m_buttonRightFrontOn) || (m_buttonLeftBackOn && m_buttonLeftFrontOn);
     }
 
-    public void SetMotorLeftFront(bool isMotorOn)
-    {
-        m_buttonLeftFrontOn = isMotorOn; 
-    }
-    public void SetMotorRightFront(bool isMotorOn)
-    {
-       m_buttonRightFrontOn = isMotorOn;
-    }
-    public void SetMotorLeftBack(bool isMotorOn)
-    {
-        m_buttonLeftBackOn = isMotorOn;
-    }
-    public void SetMotorRightBack(bool isMotorOn)
-    {
-        m_buttonRightBackOn = isMotorOn;
-    }
+   
 }
