@@ -1,8 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-
-
 public class CarKs4036DefaultMono : MonoBehaviour {
 
 
@@ -10,8 +8,6 @@ public class CarKs4036DefaultMono : MonoBehaviour {
     [SerializeField] CarEvent m_events = new CarEvent();
     [Serializable]
     class CarEvent { 
-		public UnityEvent<float> m_onLinearVelocityUpdated;
-		public UnityEvent<float> m_onAngularVelocityUpdated;
 		public UnityEvent<float> m_onLeftWheelPercentPowerUpdated;
 		public UnityEvent<float> m_onRightWheelPercentPowerUpdated;
 		public UnityEvent<float> m_onLeftWheelDegreePerSecondUpdated;
@@ -23,20 +19,12 @@ public class CarKs4036DefaultMono : MonoBehaviour {
 		public UnityEvent<Vector3> m_onPositionUpdated;
 		public UnityEvent<Quaternion> m_onRotationInQuaternion;
 		public UnityEvent<Vector3> m_onRotationInEuler;
-        public UnityEvent<int> m_onCarIdUpdated;
-        public UnityEvent m_onFireRequest;
     }
 
-    public void Fire() {
-		m_events.m_onFireRequest.Invoke();
-	}
 	public void SetCarColor(Color color) {
 		var colorNoAlpha = new Color(color.r, color.g, color.b, 1);
 		m_events.m_onColorRequestForTheCarStyle.Invoke(colorNoAlpha);
     }
-
-
-
 
     [Range(-1.0f, 1.0f)] [SerializeField] float m_leftWheelPercentPower = 0.0f;
     [Range(-1.0f, 1.0f)] [SerializeField] float m_rightWheelPercentPower = 0.0f;
@@ -53,20 +41,19 @@ public class CarKs4036DefaultMono : MonoBehaviour {
     [SerializeField] Transform m_carCenterGroundReferenceNode;
     [SerializeField] bool m_useRandomColorStyleAtReady = true;
 
+    [Header("Debug")]
     [SerializeField] float m_distanceBetweenWheelsInMm = 70.0f;
     [SerializeField] float m_radiusOfWheelsInMm = 16.6f;
     [SerializeField] float m_diameterOfWheelsInMm = 33.2f;
     [SerializeField] float m_circumferenceOfWheelsInMm;
     [SerializeField] float m_maxWheelSpeedInMeterPerSec;
-  
+    [SerializeField] float m_distanceBetweenWheelsInMeter = 0.07f;
     [SerializeField] float m_leftRotationInDegreeTotal;
     [SerializeField] float m_rightRotationInDegreeTotal;
-    [SerializeField] int m_carId;
     [SerializeField] Vector3 m_carPosition;
     [SerializeField] Quaternion m_carRotation;
     [SerializeField] Vector3 m_carEuler;
 
-    [SerializeField] float m_distanceBetweenWheelsInMeter = 0.07f;
 
 
     void Start() 
@@ -320,30 +307,11 @@ public void SetWithFourButtons(bool frontLeft, bool frontRight, bool backLeft, b
                                        (m_rotationPerSecondInDegree / 360.0f) * 0.001f;
         m_distanceBetweenWheelsInMeter = m_distanceBetweenWheelsInMm / 1000.0f;
 
-        /*
-         
-## Recompute the distance between the anchor point to move in real worlds units.
-func refresh_wheel_parameters() -> void:
-		
-	var left_wheel = _left_wheel_reference_node.global_position
-	var right_wheel = _right_wheel_reference_node.global_position
-	var radius_point = _right_wheel_top_radius_reference_node.global_position
-	
-	_distance_between_wheels_in_mm = abs(left_wheel.distance_to(right_wheel) * 1000.0)
-	_radius_of_wheels_in_mm = (right_wheel.distance_to(radius_point)) * 1000.0
-	_diameter_of_wheels_in_mm = _radius_of_wheels_in_mm * 2.0
-	_circumference_of_wheels_in_mm = _diameter_of_wheels_in_mm * PI
-	
-	_max_wheel_speed_in_meter_per_sec = _circumference_of_wheels_in_mm * \
-									   (_rotation_per_second_in_degree / 360.0) * 0.001
-	
-	_distance_between_wheels_in_meter = _distance_between_wheels_in_mm / 1000.0
-	
-         * */
+      
     }
     private float m_verticalVelocity;
     void Update()
-{
+    {
         //# ROBOT CONTROL AND ODOMETRY CALCULATIONS
         //# DIFFERENTIAL DRIVE KINEMATIC CALCULATIONS
         //# SOURCE https://youtu.be/LrsTBWf6Wsc?t=1098
@@ -413,20 +381,14 @@ func refresh_wheel_parameters() -> void:
     m_events.m_onRightWheelCurrentRotationUpdated.Invoke(m_rightRotationInDegreeTotal);
 
     // Update car state
-    m_carId = GetCarId();
     m_carPosition = GetCarPosition();
     m_carRotation = GetCarRotation();
     m_carEuler = GetCarEuler();
-    
     m_events.m_onPositionUpdated.Invoke(m_carPosition);
     m_events.m_onRotationInQuaternion.Invoke(m_carRotation);
     m_events.m_onRotationInEuler.Invoke(m_carEuler);
-    m_events.m_onCarIdUpdated.Invoke(m_carId);
-
-
-
-    _frontWheelLeftDistance = GetFrontWheelLeftDistance();
-    _frontWheelRightDistance = GetFrontWheelRightDistance();
+    m_frontWheelLeftDistance = GetFrontWheelLeftDistance();
+    m_frontWheelRightDistance = GetFrontWheelRightDistance();
 
     }
 
@@ -478,18 +440,18 @@ public void SetMotorRightBackward(bool isOn)
     }
 
 
-    [SerializeField] float _frontWheelLeftDistance = 0.0f;
-    [SerializeField] float _frontWheelRightDistance = 0.0f;
+    [SerializeField] float m_frontWheelLeftDistance = 0.0f;
+    [SerializeField] float m_frontWheelRightDistance = 0.0f;
 
     
 
     public float GetFrontWheelLeftDistance() { 
-        _frontWheelLeftDistance = GetDistanceFromRaycast(m_raycastFrontLeftWheel);
-        return _frontWheelLeftDistance;
+        m_frontWheelLeftDistance = GetDistanceFromRaycast(m_raycastFrontLeftWheel);
+        return m_frontWheelLeftDistance;
     }
     public float GetFrontWheelRightDistance() { 
-        _frontWheelRightDistance = GetDistanceFromRaycast(m_raycastFrontRightWheel);
-        return _frontWheelRightDistance;
+        m_frontWheelRightDistance = GetDistanceFromRaycast(m_raycastFrontRightWheel);
+        return m_frontWheelRightDistance;
     }
 
 
